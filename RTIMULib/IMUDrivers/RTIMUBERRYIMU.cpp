@@ -115,6 +115,7 @@ bool RTIMUBERRYIMU::setGyroControl()
     case LSM6DSL_ODR_6660Hz:
         ctrl = 0xA0;
         m_sampleRate = 6600;
+        break;
     default:
         HAL_ERROR1("Illigal LSM6DSL gyro output data rate %d\n", m_settings->m_BERRYIMUGyroSampleRate);
         return false;
@@ -196,6 +197,7 @@ bool RTIMUBERRYIMU::setAccelControl()
     case LSM6DSL_ODR_6660Hz:
         ctrl = 0xA0;
         m_sampleRate = 6600;
+        break;
     default:
         HAL_ERROR1("Illigal LSM6DSL accel output data rate %d\n", m_settings->m_BERRYIMUAccelSampleRate);
         return false;
