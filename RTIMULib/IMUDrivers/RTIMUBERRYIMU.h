@@ -18,6 +18,7 @@ public:
 private:
     bool setGyroControl();
     bool setAccelControl();
+    bool setCompassControl();
 
     unsigned char m_gyroAccelAddr;          // I2C address of gyro and accel
     unsigned char m_compassAddr;       // I2C address of mag

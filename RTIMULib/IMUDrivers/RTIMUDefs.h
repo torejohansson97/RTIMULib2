@@ -1346,7 +1346,7 @@
 //  LIS3MDL
 /************** I2C Address *****************/
 
-#define LIS3MDL_ADDRESS      0x1e
+#define LIS3MDL_ADDRESS      0x1C
 
 /************** Who am I  *******************/
 
