@@ -261,8 +261,8 @@ bool RTIMUBERRYIMU::IMURead()
 
     if (!m_settings->HALRead(m_gyroAccelAddr, LSM6DSL_ACC_GYRO_STATUS_REG, 1, &status, "Failed to read LSM6DSL status"))
         return false;
-
-    if ((status & 0x8) == 0)
+    
+    if ((status & 0x07) == 0)
         return false;
 
     if (!m_settings->HALRead(m_gyroAccelAddr, LSM6DSL_ACC_GYRO_OUTX_L_G, 6, gyroData, "Failed to read LSM6DSL gyro data"))
