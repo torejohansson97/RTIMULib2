@@ -121,8 +121,8 @@ RTIMU *RTIMU::createIMU(RTIMUSettings *settings)
     case RTIMU_TYPE_HMC5883LADXL345:
 	    return new RTIMU5883L(settings);
 
-        case RTIMU_TYPE_BERRYIMU:
-            return new RTIMUBERRYIMU(settings);
+    case RTIMU_TYPE_BERRYIMU:
+        return new RTIMUBERRYIMU(settings);
 
     case RTIMU_TYPE_AUTODISCOVER:
         if (settings->discoverIMU(settings->m_imuType, settings->m_busIsI2C, settings->m_I2CSlaveAddress)) {
