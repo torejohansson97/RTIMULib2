@@ -37,7 +37,6 @@
 #include "RTIMUBMX055.h"
 #include "RTIMUBNO055.h"
 #include "RTIMUHMC5883LADXL345.h"
-#include "RTIMUBERRYIMU.h"
 
 //  this sets the learning rate for compass running average calculation
 
@@ -119,10 +118,7 @@ RTIMU *RTIMU::createIMU(RTIMUSettings *settings)
         return new RTIMUBNO055(settings);
 
     case RTIMU_TYPE_HMC5883LADXL345:
-	    return new RTIMU5883L(settings);
-
-    case RTIMU_TYPE_BERRYIMU:
-        return new RTIMUBERRYIMU(settings);
+	return new RTIMU5883L(settings);
 
     case RTIMU_TYPE_AUTODISCOVER:
         if (settings->discoverIMU(settings->m_imuType, settings->m_busIsI2C, settings->m_I2CSlaveAddress)) {

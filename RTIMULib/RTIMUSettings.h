@@ -351,20 +351,6 @@ public:
 
     int m_BMX055MagPreset;                                  // the mag preset code
 
-    // BERRYIMU
-
-    int m_BERRYIMUGyroSampleRate;
-    int m_BERRYIMUGyroBW;
-    int m_BERRYIMUGyroHpf;
-    int m_BERRYIMUGyroFsr;
-
-    int m_BERRYIMUAccelSampleRate;
-    int m_BERRYIMUAccelFsr;
-    int m_BERRYIMUAccelLpf;
-
-    int m_BERRYIMUCompassSampleRate;
-    int m_BERRYIMUCompassFsr;
-
 private:
     void setBlank();
     void setComment(const char *comment);
