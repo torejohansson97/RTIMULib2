@@ -39,6 +39,7 @@
 #include "IMUDrivers/RTIMUGD20HM303D.h"
 #include "IMUDrivers/RTIMUGD20M303DLHC.h"
 #include "IMUDrivers/RTIMULSM9DS0.h"
+#include "IMUDrivers/RTIMUBERRYIMU.h"
 
 #include "IMUDrivers/RTPressure.h"
 #include "IMUDrivers/RTPressureBMP180.h"

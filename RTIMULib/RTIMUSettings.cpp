@@ -34,6 +34,7 @@
 #include "IMUDrivers/RTIMULSM9DS0.h"
 #include "IMUDrivers/RTIMULSM9DS1.h"
 #include "IMUDrivers/RTIMUBMX055.h"
+#include "IMUDrivers/RTIMUBERRYIMU.h"
 
 #include "IMUDrivers/RTPressureBMP180.h"
 #include "IMUDrivers/RTPressureLPS25H.h"
@@ -61,6 +62,7 @@ RTIMUSettings::RTIMUSettings(const char *settingsDirectory, const char *productT
         strcpy(m_filename, "RTIMULib.ini");
     } else {
         sprintf(m_filename, "%s/%s.ini", settingsDirectory, productType);
+	HAL_INFO1("Settings file: %s\n", m_filename);
     }
     loadSettings();
 }
@@ -598,6 +600,8 @@ void RTIMUSettings::setDefaults()
     m_BMX055AccelFsr = BMX055_ACCEL_FSR_8;
 
     m_BMX055MagPreset = BMX055_MAG_REGULAR;
+
+    // BERRYIMU defaults
 }
 
 bool RTIMUSettings::loadSettings()
@@ -614,7 +618,6 @@ bool RTIMUSettings::loadSettings()
         HAL_INFO("Settings file not found. Using defaults and creating settings file\n");
         return saveSettings();
     }
-
     while (fgets(buf, 200, m_fd)) {
         if ((buf[0] == '#') || (buf[0] == ' ') || (buf[0] == '\n'))
             // just a comment

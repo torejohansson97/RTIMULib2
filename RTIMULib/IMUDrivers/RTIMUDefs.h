@@ -44,6 +44,7 @@
 #define RTIMU_TYPE_BMX055                   9                   // Bosch BMX055
 #define RTIMU_TYPE_BNO055                   10                  // Bosch BNO055
 #define RTIMU_TYPE_HMC5883LADXL345          11                  // HMC5883L with ADXL345 and L3G4200D
+#define RTIMU_TYPE_BERRYIMU                 12                  // LSM6DSL/LIS3MDL (BerryGPS-IMUv4)
 //----------------------------------------------------------
 //
 //  MPU-9150
@@ -1122,5 +1123,331 @@
 //  Power modes
 
 #define BNO055_PWR_MODE_NORMAL      0x00
+
+//----------------------------------------------------------
+//
+//  LSM6DSL
+
+//  I2C Slave Addresses
+
+#define LSM6DSL_ADDRESS  0x6a
+#define LSM6DSL_ID        0x68
+
+//  LSM9DS1 Register map
+
+/************** I2C Address *****************/
+
+#define LSM6DSL_ACC_GYRO_I2C_ADDRESS_LOW    0xD4  // SAD[0] = 0
+#define LSM6DSL_ACC_GYRO_I2C_ADDRESS_HIGH   0xD6  // SAD[0] = 1
+
+/************** Who am I  *******************/
+
+#define LSM6DSL_ACC_GYRO_WHO_AM_I           0x6A
+
+/************** Device Register  *******************/
+
+#define LSM6DSL_ACC_GYRO_FUNC_CFG_ACCESS    0x01
+
+#define LSM6DSL_ACC_GYRO_SENSOR_SYNC_TIME   0x04
+#define LSM6DSL_ACC_GYRO_SENSOR_RES_RATIO   0x05
+
+#define LSM6DSL_ACC_GYRO_FIFO_CTRL1         0x06
+#define LSM6DSL_ACC_GYRO_FIFO_CTRL2         0x07
+#define LSM6DSL_ACC_GYRO_FIFO_CTRL3         0x08
+#define LSM6DSL_ACC_GYRO_FIFO_CTRL4         0x09
+#define LSM6DSL_ACC_GYRO_FIFO_CTRL5         0x0A
+
+#define LSM6DSL_ACC_GYRO_DRDY_PULSE_CFG_G   0x0B
+#define LSM6DSL_ACC_GYRO_INT1_CTRL          0x0D
+#define LSM6DSL_ACC_GYRO_INT2_CTRL          0x0E
+#define LSM6DSL_ACC_GYRO_WHO_AM_I_REG       0x0F
+#define LSM6DSL_ACC_GYRO_CTRL1_XL           0x10
+#define LSM6DSL_ACC_GYRO_CTRL2_G            0x11
+#define LSM6DSL_ACC_GYRO_CTRL3_C            0x12
+#define LSM6DSL_ACC_GYRO_CTRL4_C            0x13
+#define LSM6DSL_ACC_GYRO_CTRL5_C            0x14
+#define LSM6DSL_ACC_GYRO_CTRL6_C            0x15
+#define LSM6DSL_ACC_GYRO_CTRL7_G            0x16
+#define LSM6DSL_ACC_GYRO_CTRL8_XL           0x17
+#define LSM6DSL_ACC_GYRO_CTRL9_XL           0x18
+#define LSM6DSL_ACC_GYRO_CTRL10_C           0x19
+
+#define LSM6DSL_ACC_GYRO_MASTER_CONFIG      0x1A
+#define LSM6DSL_ACC_GYRO_WAKE_UP_SRC        0x1B
+#define LSM6DSL_ACC_GYRO_TAP_SRC            0x1C
+#define LSM6DSL_ACC_GYRO_D6D_SRC            0x1D
+#define LSM6DSL_ACC_GYRO_STATUS_REG         0x1E
+
+#define LSM6DSL_ACC_GYRO_OUT_TEMP_L         0x20
+#define LSM6DSL_ACC_GYRO_OUT_TEMP_H         0x21
+#define LSM6DSL_ACC_GYRO_OUTX_L_G           0x22
+#define LSM6DSL_ACC_GYRO_OUTX_H_G           0x23
+#define LSM6DSL_ACC_GYRO_OUTY_L_G           0x24
+#define LSM6DSL_ACC_GYRO_OUTY_H_G           0x25
+#define LSM6DSL_ACC_GYRO_OUTZ_L_G           0x26
+#define LSM6DSL_ACC_GYRO_OUTZ_H_G           0x27
+#define LSM6DSL_ACC_GYRO_OUTX_L_XL          0x28
+#define LSM6DSL_ACC_GYRO_OUTX_H_XL          0x29
+#define LSM6DSL_ACC_GYRO_OUTY_L_XL          0x2A
+#define LSM6DSL_ACC_GYRO_OUTY_H_XL          0x2B
+#define LSM6DSL_ACC_GYRO_OUTZ_L_XL          0x2C
+#define LSM6DSL_ACC_GYRO_OUTZ_H_XL          0x2D
+#define LSM6DSL_ACC_GYRO_SENSORHUB1_REG     0x2E
+#define LSM6DSL_ACC_GYRO_SENSORHUB2_REG     0x2F
+#define LSM6DSL_ACC_GYRO_SENSORHUB3_REG     0x30
+#define LSM6DSL_ACC_GYRO_SENSORHUB4_REG     0x31
+#define LSM6DSL_ACC_GYRO_SENSORHUB5_REG     0x32
+#define LSM6DSL_ACC_GYRO_SENSORHUB6_REG     0x33
+#define LSM6DSL_ACC_GYRO_SENSORHUB7_REG     0x34
+#define LSM6DSL_ACC_GYRO_SENSORHUB8_REG     0x35
+#define LSM6DSL_ACC_GYRO_SENSORHUB9_REG     0x36
+#define LSM6DSL_ACC_GYRO_SENSORHUB10_REG    0x37
+#define LSM6DSL_ACC_GYRO_SENSORHUB11_REG    0x38
+#define LSM6DSL_ACC_GYRO_SENSORHUB12_REG    0x39
+#define LSM6DSL_ACC_GYRO_FIFO_STATUS1       0x3A
+#define LSM6DSL_ACC_GYRO_FIFO_STATUS2       0x3B
+#define LSM6DSL_ACC_GYRO_FIFO_STATUS3       0x3C
+#define LSM6DSL_ACC_GYRO_FIFO_STATUS4       0x3D
+#define LSM6DSL_ACC_GYRO_FIFO_DATA_OUT_L    0x3E
+#define LSM6DSL_ACC_GYRO_FIFO_DATA_OUT_H    0x3F
+#define LSM6DSL_ACC_GYRO_TIMESTAMP0_REG     0x40
+#define LSM6DSL_ACC_GYRO_TIMESTAMP1_REG     0x41
+#define LSM6DSL_ACC_GYRO_TIMESTAMP2_REG     0x42
+
+#define LSM6DSL_ACC_GYRO_TIMESTAMP_L        0x49
+#define LSM6DSL_ACC_GYRO_TIMESTAMP_H        0x4A
+
+#define LSM6DSL_ACC_GYRO_STEP_COUNTER_L     0x4B
+#define LSM6DSL_ACC_GYRO_STEP_COUNTER_H     0x4C
+
+#define LSM6DSL_ACC_GYRO_SENSORHUB13_REG    0x4D
+#define LSM6DSL_ACC_GYRO_SENSORHUB14_REG    0x4E
+#define LSM6DSL_ACC_GYRO_SENSORHUB15_REG    0x4F
+#define LSM6DSL_ACC_GYRO_SENSORHUB16_REG    0x50
+#define LSM6DSL_ACC_GYRO_SENSORHUB17_REG    0x51
+#define LSM6DSL_ACC_GYRO_SENSORHUB18_REG    0x52
+
+#define LSM6DSL_ACC_GYRO_FUNC_SRC           0x53
+#define LSM6DSL_ACC_GYRO_TAP_CFG1           0x58
+#define LSM6DSL_ACC_GYRO_TAP_THS_6D         0x59
+#define LSM6DSL_ACC_GYRO_INT_DUR2           0x5A
+#define LSM6DSL_ACC_GYRO_WAKE_UP_THS        0x5B
+#define LSM6DSL_ACC_GYRO_WAKE_UP_DUR        0x5C
+#define LSM6DSL_ACC_GYRO_FREE_FALL          0x5D
+#define LSM6DSL_ACC_GYRO_MD1_CFG            0x5E
+#define LSM6DSL_ACC_GYRO_MD2_CFG            0x5F
+
+#define LSM6DSL_ACC_GYRO_OUT_MAG_RAW_X_L    0x66
+#define LSM6DSL_ACC_GYRO_OUT_MAG_RAW_X_H    0x67
+#define LSM6DSL_ACC_GYRO_OUT_MAG_RAW_Y_L    0x68
+#define LSM6DSL_ACC_GYRO_OUT_MAG_RAW_Y_H    0x69
+#define LSM6DSL_ACC_GYRO_OUT_MAG_RAW_Z_L    0x6A
+#define LSM6DSL_ACC_GYRO_OUT_MAG_RAW_Z_H    0x6B
+
+#define LSM6DSL_ACC_GYRO_X_OFS_USR          0x73
+#define LSM6DSL_ACC_GYRO_Y_OFS_USR          0x74
+#define LSM6DSL_ACC_GYRO_Z_OFS_USR          0x75
+
+/************** Embedded functions register mapping  *******************/
+#define LSM6DSL_ACC_GYRO_SLV0_ADD                     0x02
+#define LSM6DSL_ACC_GYRO_SLV0_SUBADD                  0x03
+#define LSM6DSL_ACC_GYRO_SLAVE0_CONFIG                0x04
+#define LSM6DSL_ACC_GYRO_SLV1_ADD                     0x05
+#define LSM6DSL_ACC_GYRO_SLV1_SUBADD                  0x06
+#define LSM6DSL_ACC_GYRO_SLAVE1_CONFIG                0x07
+#define LSM6DSL_ACC_GYRO_SLV2_ADD                     0x08
+#define LSM6DSL_ACC_GYRO_SLV2_SUBADD                  0x09
+#define LSM6DSL_ACC_GYRO_SLAVE2_CONFIG                0x0A
+#define LSM6DSL_ACC_GYRO_SLV3_ADD                     0x0B
+#define LSM6DSL_ACC_GYRO_SLV3_SUBADD                  0x0C
+#define LSM6DSL_ACC_GYRO_SLAVE3_CONFIG                0x0D
+#define LSM6DSL_ACC_GYRO_DATAWRITE_SRC_MODE_SUB_SLV0  0x0E
+#define LSM6DSL_ACC_GYRO_CONFIG_PEDO_THS_MIN          0x0F
+
+#define LSM6DSL_ACC_GYRO_SM_STEP_THS                  0x13
+#define LSM6DSL_ACC_GYRO_PEDO_DEB_REG                 0x14
+#define LSM6DSL_ACC_GYRO_STEP_COUNT_DELTA             0x15
+
+#define LSM6DSL_ACC_GYRO_MAG_SI_XX                    0x24
+#define LSM6DSL_ACC_GYRO_MAG_SI_XY                    0x25
+#define LSM6DSL_ACC_GYRO_MAG_SI_XZ                    0x26
+#define LSM6DSL_ACC_GYRO_MAG_SI_YX                    0x27
+#define LSM6DSL_ACC_GYRO_MAG_SI_YY                    0x28
+#define LSM6DSL_ACC_GYRO_MAG_SI_YZ                    0x29
+#define LSM6DSL_ACC_GYRO_MAG_SI_ZX                    0x2A
+#define LSM6DSL_ACC_GYRO_MAG_SI_ZY                    0x2B
+#define LSM6DSL_ACC_GYRO_MAG_SI_ZZ                    0x2C
+#define LSM6DSL_ACC_GYRO_MAG_OFFX_L                   0x2D
+#define LSM6DSL_ACC_GYRO_MAG_OFFX_H                   0x2E
+#define LSM6DSL_ACC_GYRO_MAG_OFFY_L                   0x2F
+#define LSM6DSL_ACC_GYRO_MAG_OFFY_H                   0x30
+#define LSM6DSL_ACC_GYRO_MAG_OFFZ_L                   0x31
+#define LSM6DSL_ACC_GYRO_MAG_OFFZ_H                   0x32
+
+/* Accelero Full_ScaleSelection */
+#define LSM6DSL_ACC_FULLSCALE_2G          ((uint8_t)0x00) /*!< ±2 g */
+#define LSM6DSL_ACC_FULLSCALE_4G          ((uint8_t)0x08) /*!< ±4 g */
+#define LSM6DSL_ACC_FULLSCALE_8G          ((uint8_t)0x0C) /*!< ±8 g */
+#define LSM6DSL_ACC_FULLSCALE_16G         ((uint8_t)0x04) /*!< ±16 g */
+
+/* Accelero Full Scale Sensitivity */
+#define LSM6DSL_ACC_SENSITIVITY_2G     ((float)0.061f)  /*!< accelerometer sensitivity with 2 g full scale  [mgauss/LSB] */
+#define LSM6DSL_ACC_SENSITIVITY_4G     ((float)0.122f)  /*!< accelerometer sensitivity with 4 g full scale  [mgauss/LSB] */
+#define LSM6DSL_ACC_SENSITIVITY_8G     ((float)0.244f)  /*!< accelerometer sensitivity with 8 g full scale  [mgauss/LSB] */
+#define LSM6DSL_ACC_SENSITIVITY_16G    ((float)0.488f)  /*!< accelerometer sensitivity with 12 g full scale [mgauss/LSB] */
+
+/* Accelero Power Mode selection */
+#define LSM6DSL_ACC_GYRO_LP_XL_DISABLED     ((uint8_t)0x00) /* LP disabled*/
+#define LSM6DSL_ACC_GYRO_LP_XL_ENABLED      ((uint8_t)0x10) /* LP enabled*/
+
+/* Output Data Rate */
+#define LSM6DSL_ODR_BITPOSITION      ((uint8_t)0xF0)  /*!< Output Data Rate bit position */  
+#define LSM6DSL_ODR_POWER_DOWN       ((uint8_t)0x00) /* Power Down mode       */
+#define LSM6DSL_ODR_13Hz             ((uint8_t)0x10) /* Low Power mode        */
+#define LSM6DSL_ODR_26Hz             ((uint8_t)0x20) /* Low Power mode        */ 
+#define LSM6DSL_ODR_52Hz             ((uint8_t)0x30) /* Low Power mode        */
+#define LSM6DSL_ODR_104Hz            ((uint8_t)0x40) /* Normal mode           */
+#define LSM6DSL_ODR_208Hz            ((uint8_t)0x50) /* Normal mode           */
+#define LSM6DSL_ODR_416Hz            ((uint8_t)0x60) /* High Performance mode */
+#define LSM6DSL_ODR_833Hz            ((uint8_t)0x70) /* High Performance mode */
+#define LSM6DSL_ODR_1660Hz           ((uint8_t)0x80) /* High Performance mode */
+#define LSM6DSL_ODR_3330Hz           ((uint8_t)0x90) /* High Performance mode */
+#define LSM6DSL_ODR_6660Hz           ((uint8_t)0xA0) /* High Performance mode */ 
+
+/* Gyro Full Scale Selection */
+#define LSM6DSL_GYRO_FS_245            ((uint8_t)0x00)  
+#define LSM6DSL_GYRO_FS_500            ((uint8_t)0x04)  
+#define LSM6DSL_GYRO_FS_1000           ((uint8_t)0x08)  
+#define LSM6DSL_GYRO_FS_2000           ((uint8_t)0x0C)
+
+/* Gyro Full Scale Sensitivity */ 
+#define LSM6DSL_GYRO_SENSITIVITY_245DPS            ((float)8.750f) /**< Sensitivity value for 245 dps full scale  [mdps/LSB] */ 
+#define LSM6DSL_GYRO_SENSITIVITY_500DPS            ((float)17.50f) /**< Sensitivity value for 500 dps full scale  [mdps/LSB] */ 
+#define LSM6DSL_GYRO_SENSITIVITY_1000DPS           ((float)35.00f) /**< Sensitivity value for 1000 dps full scale [mdps/LSB] */ 
+#define LSM6DSL_GYRO_SENSITIVITY_2000DPS           ((float)70.00f) /**< Sensitivity value for 2000 dps full scale [mdps/LSB] */ 
+
+/* Gyro Power Mode selection */
+#define LSM6DSL_ACC_GYRO_LP_G_DISABLED     ((uint8_t)0x00) /* LP disabled*/
+#define LSM6DSL_ACC_GYRO_LP_G_ENABLED      ((uint8_t)0x80) /* LP enabled*/
+
+/* Block Data Update */  
+#define LSM6DSL_BDU_CONTINUOS               ((uint8_t)0x00)
+#define LSM6DSL_BDU_BLOCK_UPDATE            ((uint8_t)0x40)
+
+/* Auto-increment */
+#define LSM6DSL_ACC_GYRO_IF_INC_DISABLED    ((uint8_t)0x00)
+#define LSM6DSL_ACC_GYRO_IF_INC_ENABLED     ((uint8_t)0x04)
+
+#define LSM6DSL_XL_LPF_1500                 0x00
+#define LSM6DSL_XL_LPF_400                  0x01
+
+//----------------------------------------------------------
+//
+//  LIS3MDL
+/************** I2C Address *****************/
+
+#define LIS3MDL_ADDRESS      0x1C
+
+/************** Who am I  *******************/
+
+#define I_AM_LIS3MDL                        ((uint8_t)0x3D)
+
+/************** Device Register  *******************/
+
+#define LIS3MDL_MAG_WHO_AM_I_REG    0x0F
+#define LIS3MDL_MAG_CTRL_REG1       0x20
+#define LIS3MDL_MAG_CTRL_REG2       0x21
+#define LIS3MDL_MAG_CTRL_REG3       0x22
+#define LIS3MDL_MAG_CTRL_REG4       0x23
+#define LIS3MDL_MAG_CTRL_REG5       0x24
+#define LIS3MDL_MAG_STATUS_REG      0x27
+#define LIS3MDL_MAG_OUTX_L          0x28
+#define LIS3MDL_MAG_OUTX_H          0x29
+#define LIS3MDL_MAG_OUTY_L          0x2A
+#define LIS3MDL_MAG_OUTY_H          0x2B
+#define LIS3MDL_MAG_OUTZ_L          0x2C
+#define LIS3MDL_MAG_OUTZ_H          0x2D
+#define LIS3MDL_MAG_TEMP_OUT_L      0x2E
+#define LIS3MDL_MAG_TEMP_OUT_H      0x2F
+#define LIS3MDL_MAG_INT_CFG         0x30
+#define LIS3MDL_MAG_INT_SRC         0x31
+#define LIS3MDL_MAG_INT_THS_L       0x32
+#define LIS3MDL_MAG_INT_THS_H       0x33
+  
+/* Mag Temperature Sensor Control*/ 
+#define LIS3MDL_MAG_TEMPSENSOR_ENABLE        ((uint8_t) 0x80)   /*!< Temp sensor Enable */
+#define LIS3MDL_MAG_TEMPSENSOR_DISABLE       ((uint8_t) 0x00)   /*!< Temp sensor Disable */
+
+/* Mag_XY-axis Operating Mode */ 
+#define LIS3MDL_MAG_OM_XY_LOWPOWER           ((uint8_t) 0x00)
+#define LIS3MDL_MAG_OM_XY_MEDIUM             ((uint8_t) 0x20)
+#define LIS3MDL_MAG_OM_XY_HIGH               ((uint8_t) 0x40)
+#define LIS3MDL_MAG_OM_XY_ULTRAHIGH          ((uint8_t) 0x60)
+   
+/* Mag Data Rate */ 
+#define LIS3MDL_MAG_ODR_0_625_HZ             ((uint8_t) 0x00)  /*!< Output Data Rate = 0.625 Hz */
+#define LIS3MDL_MAG_ODR_1_25_HZ              ((uint8_t) 0x04)  /*!< Output Data Rate = 1.25 Hz  */
+#define LIS3MDL_MAG_ODR_2_5_HZ               ((uint8_t) 0x08)  /*!< Output Data Rate = 2.5 Hz   */
+#define LIS3MDL_MAG_ODR_5_0_HZ               ((uint8_t) 0x0C)  /*!< Output Data Rate = 5.0 Hz   */
+#define LIS3MDL_MAG_ODR_10_HZ                ((uint8_t) 0x10)  /*!< Output Data Rate = 10 Hz    */
+#define LIS3MDL_MAG_ODR_20_HZ                ((uint8_t) 0x14)  /*!< Output Data Rate = 20 Hz    */
+#define LIS3MDL_MAG_ODR_40_HZ                ((uint8_t) 0x18)  /*!< Output Data Rate = 40 Hz    */
+#define LIS3MDL_MAG_ODR_80_HZ                ((uint8_t) 0x1C)  /*!< Output Data Rate = 80 Hz    */
+
+/* Mag Data Rate */ 
+#define LMS303C_MAG_SELFTEST_DISABLE         ((uint8_t 0x00)     
+#define LMS303C_MAG_SELFTEST_ENABLE          ((uint8_t 0x01)
+   
+/* Mag Full Scale */ 
+#define LIS3MDL_MAG_FS_DEFAULT               ((uint8_t) 0x00)
+#define LIS3MDL_MAG_FS_4_GA                  ((uint8_t) 0x00)  
+#define LIS3MDL_MAG_FS_8_GA                  ((uint8_t) 0x20)
+#define LIS3MDL_MAG_FS_12_GA                 ((uint8_t) 0x40)  
+#define LIS3MDL_MAG_FS_16_GA                 ((uint8_t) 0x60)  /*!< Full scale = ±16 Gauss */
+
+/* Mag_Reboot */ 
+#define LIS3MDL_MAG_REBOOT_DEFAULT           ((uint8_t) 0x00)
+#define LIS3MDL_MAG_REBOOT_ENABLE            ((uint8_t) 0x08)
+   
+/* Mag Soft reset */ 
+#define LIS3MDL_MAG_SOFT_RESET_DEFAULT       ((uint8_t) 0x00)
+#define LIS3MDL_MAG_SOFT_RESET_ENABLE        ((uint8_t) 0x04)
+   
+/* Mag_Communication_Mode */ 
+#define LIS3MDL_MAG_SIM_4_WIRE               ((uint8_t) 0x00)
+#define LIS3MDL_MAG_SIM_3_WIRE               ((uint8_t) 0x04)
+   
+/* Mag Lowpower mode config */ 
+#define LIS3MDL_MAG_CONFIG_NORMAL_MODE       ((uint8_t) 0x00)
+#define LIS3MDL_MAG_CONFIG_LOWPOWER_MODE     ((uint8_t) 0x20)
+   
+/* Mag Operation Mode */ 
+#define LIS3MDL_MAG_SELECTION_MODE           ((uint8_t) 0x03) /* CTRL_REG3 */
+#define LIS3MDL_MAG_CONTINUOUS_MODE          ((uint8_t) 0x00)
+#define LIS3MDL_MAG_SINGLE_MODE              ((uint8_t) 0x01)
+#define LIS3MDL_MAG_POWERDOWN1_MODE          ((uint8_t) 0x02)
+#define LIS3MDL_MAG_POWERDOWN2_MODE          ((uint8_t) 0x03)
+
+/* Mag_Z-axis Operation Mode */ 
+#define LIS3MDL_MAG_OM_Z_LOWPOWER            ((uint8_t) 0x00)
+#define LIS3MDL_MAG_OM_Z_MEDIUM              ((uint8_t) 0x04)
+#define LIS3MDL_MAG_OM_Z_HIGH                ((uint8_t) 0x08)
+#define LIS3MDL_MAG_OM_Z_ULTRAHIGH           ((uint8_t) 0x0C)   
+
+/* Mag Big little-endian selection */ 
+#define LIS3MDL_MAG_BLE_LSB                  ((uint8_t) 0x00)
+#define LIS3MDL_MAG_BLE_MSB                  ((uint8_t) 0x02)
+
+
+/* Mag_Bloc_update_magnetic_data */ 
+#define LIS3MDL_MAG_BDU_CONTINUOUS           ((uint8_t) 0x00)
+#define LIS3MDL_MAG_BDU_MSBLSB               ((uint8_t) 0x40)
+   
+   
+/* Magnetometer_Sensitivity */
+#define LIS3MDL_MAG_SENSITIVITY_FOR_FS_4GA   ((float)0.14f)  /**< Sensitivity value for 4 gauss full scale  [mgauss/LSB] */
+#define LIS3MDL_MAG_SENSITIVITY_FOR_FS_8GA   ((float)0.29f)  /**< Sensitivity value for 8 gauss full scale  [mgauss/LSB] */
+#define LIS3MDL_MAG_SENSITIVITY_FOR_FS_12GA  ((float)0.43f)  /**< Sensitivity value for 12 gauss full scale [mgauss/LSB] */
+#define LIS3MDL_MAG_SENSITIVITY_FOR_FS_16GA  ((float)0.58f)  /**< Sensitivity value for 16 gauss full scale [mgauss/LSB] */
 
 #endif // _RTIMUDEFS_H
