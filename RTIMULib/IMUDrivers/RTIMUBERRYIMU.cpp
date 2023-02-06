@@ -3,15 +3,17 @@
 
 //  this sets the learning rate for compass running average calculation
 #define COMPASS_ALPHA 0.2f
+#define STANDARD_GRAVITY_CONSTANT 9.80665f
+#define GAUSS_TO_TESLA 0.1f
 
 RTIMUBERRYIMU::RTIMUBERRYIMU(RTIMUSettings *settings) : RTIMU(settings)
 {
     m_sampleRate = 100;
     m_settings->m_BERRYIMUGyroSampleRate = LSM6DSL_ODR_6660Hz;
 	m_settings->m_BERRYIMUAccelSampleRate = LSM6DSL_ODR_6660Hz;
-    m_settings->m_BERRYIMUCompassSampleRate = LIS3MDL_MAG_OM_XY_ULTRAHIGH | LIS3MDL_MAG_ODR_80_HZ | 0x02;
+    m_settings->m_BERRYIMUCompassSampleRate = LIS3MDL_MAG_OM_XY_ULTRAHIGH | LIS3MDL_MAG_ODR_80_HZ | 0x02; // 155 Hz
 	m_settings->m_BERRYIMUGyroFsr = LSM6DSL_GYRO_FS_245;
-	m_settings->m_BERRYIMUAccelFsr = LSM6DSL_ACC_FULLSCALE_8G;
+	m_settings->m_BERRYIMUAccelFsr = LSM6DSL_ACC_FULLSCALE_4G;
 	m_settings->m_BERRYIMUAccelLpf = LSM6DSL_XL_LPF_400;
 }
 
@@ -75,7 +77,7 @@ bool RTIMUBERRYIMU::IMUInit()
     if(!m_settings->HALWrite(m_compassAddr, LIS3MDL_MAG_CTRL_REG2, 0x20, "Failed to set LIS3MDL Full Scale Reg"))
         return false;
     
-    m_compassScale = LIS3MDL_MAG_SENSITIVITY_FOR_FS_8GA / 1000;
+    m_compassScale = LIS3MDL_MAG_SENSITIVITY_FOR_FS_8GA*GAUSS_TO_TESLA; 
     
     if(!m_settings->HALRead(m_compassAddr, LIS3MDL_MAG_WHO_AM_I_REG, 1, &result, "Failed to read LIS3MDL ID"))
         return false;
@@ -154,7 +156,7 @@ bool RTIMUBERRYIMU::setGyroControl()
     { // TODO: Scale factors
     case LSM6DSL_GYRO_FS_245:
         ctrl |= 0x00;
-        m_gyroScale = (RTFLOAT)0.0763 * RTMATH_DEGREE_TO_RAD;
+        m_gyroScale = (RTFLOAT)0.00763 * RTMATH_DEGREE_TO_RAD;
         break;
     case LSM6DSL_GYRO_FS_500:
         ctrl |= 0x04;
@@ -165,7 +167,7 @@ bool RTIMUBERRYIMU::setGyroControl()
         m_gyroScale = (RTFLOAT)0.0305 * RTMATH_DEGREE_TO_RAD;
         break;
     case LSM6DSL_GYRO_FS_2000:
-        ctrl |= 0x0A;
+        ctrl |= 0x0C;
         m_gyroScale = (RTFLOAT)0.0610 * RTMATH_DEGREE_TO_RAD;
         break;
     default:
@@ -236,19 +238,19 @@ bool RTIMUBERRYIMU::setAccelControl()
     {
     case LSM6DSL_ACC_FULLSCALE_2G:
         ctrl |= 0x00;
-        m_accelScale = (RTFLOAT)0.000061;
+        m_accelScale = (RTFLOAT)0.000061 * (RTFLOAT)STANDARD_GRAVITY_CONSTANT;
         break;
     case LSM6DSL_ACC_FULLSCALE_4G:
-        ctrl |= 0x04;
-        m_accelScale = (RTFLOAT)0.000122;
+        ctrl |= 0x08;
+        m_accelScale = (RTFLOAT)0.000122 * (RTFLOAT)STANDARD_GRAVITY_CONSTANT;
         break;
     case LSM6DSL_ACC_FULLSCALE_8G:
-        ctrl |= 0x08;
-        m_accelScale = (RTFLOAT)0.000244;
+        ctrl |= 0x0C;
+        m_accelScale = (RTFLOAT)0.000244 * (RTFLOAT)STANDARD_GRAVITY_CONSTANT;
         break;
     case LSM6DSL_ACC_FULLSCALE_16G:
-        ctrl |= 0x0A;
-        m_accelScale = (RTFLOAT)0.000488;
+        ctrl |= 0x04;
+        m_accelScale = (RTFLOAT)0.000488 * (RTFLOAT)STANDARD_GRAVITY_CONSTANT;
         break;
     default:
         HAL_ERROR1("Illigal LSM6DSL accel full scale %d\n", m_settings->m_BERRYIMUAccelFsr);
@@ -303,10 +305,10 @@ bool RTIMUBERRYIMU::setCompassControl()
         ctrl = 0x1C;
         break;
     default:
-        HAL_ERROR1("Illigal LIS3MDL sample rate %d\n", (m_settings->m_BERRYIMUAccelSampleRate & 0x1C));
+        HAL_ERROR1("Illigal LIS3MDL sample rate %d\n", (m_settings->m_BERRYIMUCompassSampleRate & 0x1C));
     }
 
-    switch ((m_settings->m_BERRYIMUAccelSampleRate & 0x60)) // OM bits
+    switch ((m_settings->m_BERRYIMUCompassSampleRate & 0x60)) // OM bits
     {
     case LIS3MDL_MAG_OM_XY_LOWPOWER:
         ctrl |= 0x00;
@@ -321,10 +323,10 @@ bool RTIMUBERRYIMU::setCompassControl()
         ctrl |= 0x60;
         break;
     default:
-        HAL_ERROR1("Illigal LIS3MDL OM_XY %d\n", (m_settings->m_BERRYIMUAccelSampleRate & 0x60));
+        HAL_ERROR1("Illigal LIS3MDL OM_XY %d\n", (m_settings->m_BERRYIMUCompassSampleRate & 0x60));
     }
 
-    switch ((m_settings->m_BERRYIMUAccelSampleRate & 0x02)) // FAST_ODR bit
+    switch ((m_settings->m_BERRYIMUCompassSampleRate & 0x02)) // FAST_ODR bit
     {
     case 0x00:
         ctrl |= 0x00;
@@ -333,9 +335,8 @@ bool RTIMUBERRYIMU::setCompassControl()
         ctrl |= 0x02;
         break;
     default:
-        HAL_ERROR1("Illigal LIS3MDL FAST_ODR %d\n", (m_settings->m_BERRYIMUAccelSampleRate & 0x02));
+        HAL_ERROR1("Illigal LIS3MDL FAST_ODR %d\n", (m_settings->m_BERRYIMUCompassSampleRate & 0x02));
     }
-    
     return (m_settings->HALWrite(m_compassAddr, LIS3MDL_MAG_CTRL_REG1, ctrl, "Failed to set LIS3MDL CTRL_REG1"));
 }
 
@@ -343,7 +344,7 @@ bool RTIMUBERRYIMU::setCompassControl()
 
 int RTIMUBERRYIMU::IMUGetPollInterval()
 {
-    return (400 / m_sampleRate); // TODO: Is this correct?
+    return (1/100); // m_sampleRate); // TODO: Is this correct?
 }
 
 bool RTIMUBERRYIMU::IMURead()
@@ -356,8 +357,10 @@ bool RTIMUBERRYIMU::IMURead()
     if (!m_settings->HALRead(m_gyroAccelAddr, LSM6DSL_ACC_GYRO_STATUS_REG, 1, &status, "Failed to read LSM6DSL status"))
         return false;
     
-    if ((status & 0x07) == 0)
+    if ((status & 0x07) == 0){
+	printf("LSM6DSL Status Not OK\n");
         return false;
+    }
 
     if (!m_settings->HALRead(m_gyroAccelAddr, LSM6DSL_ACC_GYRO_OUTX_L_G, 6, gyroData, "Failed to read LSM6DSL gyro data"))
         return false;
@@ -367,11 +370,13 @@ bool RTIMUBERRYIMU::IMURead()
     if (!m_settings->HALRead(m_gyroAccelAddr, LSM6DSL_ACC_GYRO_OUTX_L_XL, 6, accelData, "Failed to read LSM6DSL accel data"))
         return false;
 
-    if (!m_settings->HALRead(m_gyroAccelAddr, LIS3MDL_MAG_STATUS_REG, 1, &status, "Failed to read LIS3MDL status"))
+    if (!m_settings->HALRead(m_compassAddr, LIS3MDL_MAG_STATUS_REG, 1, &status, "Failed to read LIS3MDL status"))
         return false;
 
-    if ((status & 0x0F) == 0)
-        return false;
+    if ((status & 0x0F) == 0){
+        printf("LIS3MDL Status Not OK, %d\n", status);
+	return false;
+    }
 
     if(!m_settings->HALRead(m_compassAddr, LIS3MDL_MAG_OUTX_L, 6, compassData, "Failed to read LIS3MDL compass data")) return false;
 
@@ -382,16 +387,16 @@ bool RTIMUBERRYIMU::IMURead()
     // sort out gyro axes and correct for bias
 
     m_imuData.gyro.setX(m_imuData.gyro.x());
-    m_imuData.gyro.setY(-m_imuData.gyro.y());
-    m_imuData.gyro.setZ(-m_imuData.gyro.z());
+    m_imuData.gyro.setY(m_imuData.gyro.y());
+    m_imuData.gyro.setZ(m_imuData.gyro.z());
 
     // sort out accel axes
 
-    m_imuData.accel.setX(-m_imuData.accel.x());
+    //m_imuData.accel.setX(m_imuData.accel.x());
 
     // sort out compass axes
 
-    m_imuData.compass.setY(-m_imuData.compass.y());
+    //m_imuData.compass.setY(m_imuData.compass.y());
 
     // standard processing
 
