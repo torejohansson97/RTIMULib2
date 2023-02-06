@@ -62,6 +62,7 @@ RTIMUSettings::RTIMUSettings(const char *settingsDirectory, const char *productT
         strcpy(m_filename, "RTIMULib.ini");
     } else {
         sprintf(m_filename, "%s/%s.ini", settingsDirectory, productType);
+	HAL_INFO1("Settings file: %s\n", m_filename);
     }
     loadSettings();
 }
@@ -617,7 +618,6 @@ bool RTIMUSettings::loadSettings()
         HAL_INFO("Settings file not found. Using defaults and creating settings file\n");
         return saveSettings();
     }
-
     while (fgets(buf, 200, m_fd)) {
         if ((buf[0] == '#') || (buf[0] == ' ') || (buf[0] == '\n'))
             // just a comment
